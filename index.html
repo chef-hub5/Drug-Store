@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthHub - Your Trusted Online Pharmacy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sticky-icon {
+            position: fixed;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-icon {
+            left: 20px;
+            bottom: 100px;
+        }
+        .message-icon {
+            right: 20px;
+            bottom: 100px;
+        }
+        .popup-message {
+            position: fixed;
+            z-index: 1001;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 20px;
+            width: 300px;
+            transform: scale(0);
+            transition: transform 0.3s ease;
+        }
+        .popup-message.show {
+            transform: scale(1);
+        }
+        .whatsapp-popup {
+            left: 80px;
+            bottom: 100px;
+        }
+        .message-popup {
+            right: 80px;
+            bottom: 100px;
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #16a34a;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse-success {
+            animation: pulseSuccess 0.6s ease-in-out;
+        }
+        @keyframes pulseSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); background-color: #22c55e; }
+            100% { transform: scale(1); }
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            transform: translateX(400px);
+            transition: transform 0.3s ease-in-out;
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+        .notification.success {
+            background-color: #16a34a;
+        }
+        .notification.error {
+            background-color: #dc2626;
+        }
+        
+        /* Premium Animation Effects */
+        .slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .bounce-in {
+            animation: bounceIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+            to { box-shadow: 0 0 30px rgba(34, 197, 94, 0.6); }
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 30%, #166534 60%, #14532d 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.15"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.15"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.15"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: heroShimmer 20s ease-in-out infinite;
+        }
+        
+        /* Animated Header Styles */
+        .animated-header {
+            animation: headerColorChange 14s ease-in-out infinite;
+            transition: all 1s ease-in-out;
+        }
+        
+        @keyframes headerColorChange {
+            0%, 50% { 
+                background-color: white;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            25% { 
+                background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+                box-shadow: 0 4px 20px rgba(22, 163, 74, 0.3);
+            }
+            75% { 
+                background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+                box-shadow: 0 4px 20px rgba(22, 163, 74, 0.3);
+            }
+        }
+        
+        .header-text {
+            animation: headerTextChange 14s ease-in-out infinite;
+            transition: all 1s ease-in-out;
+        }
+        
+        @keyframes headerTextChange {
+            0%, 50% { 
+                color: #374151; /* gray-700 */
+            }
+            25%, 75% { 
+                color: white;
+            }
+        }
+        
+        .header-logo {
+            animation: headerLogoChange 14s ease-in-out infinite;
+            transition: all 1s ease-in-out;
+        }
+        
+        @keyframes headerLogoChange {
+            0%, 50% { 
+                color: #16a34a; /* green-600 */
+            }
+            25%, 75% { 
+                color: white;
+            }
+        }
+        
+        .header-cart {
+            animation: headerCartChange 14s ease-in-out infinite;
+            transition: all 1s ease-in-out;
+        }
+        
+        @keyframes headerCartChange {
+            0%, 50% { 
+                color: #374151; /* gray-700 */
+            }
+            25%, 75% { 
+                color: white;
+            }
+        }
+        
+        .header-mobile-btn {
+            animation: headerMobileBtnChange 14s ease-in-out infinite;
+            transition: all 1s ease-in-out;
+        }
+        
+        @keyframes headerMobileBtnChange {
+            0%, 50% { 
+                color: #374151; /* gray-700 */
+            }
+            25%, 75% { 
+                color: white;
+            }
+        }
+        
+        .dropdown-menu {
+            animation: dropdownChange 14s ease-in-out infinite;
+            transition: all 1s ease-in-out;
+        }
+        
+        @keyframes dropdownChange {
+            0%, 50% { 
+                background-color: white;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            25%, 75% { 
+                background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+                box-shadow: 0 10px 25px rgba(22, 163, 74, 0.4);
+            }
+        }
+        
+        .dropdown-item {
+            animation: dropdownItemChange 14s ease-in-out infinite;
+            transition: all 1s ease-in-out;
+        }
+        
+        @keyframes dropdownItemChange {
+            0%, 50% { 
+                color: #374151; /* gray-700 */
+            }
+            25%, 75% { 
+                color: white;
+            }
+        }
+        
+        .dropdown-item:hover {
+            animation: dropdownItemHoverChange 14s ease-in-out infinite;
+        }
+        
+        @keyframes dropdownItemHoverChange {
+            0%, 50% { 
+                background-color: #f0fdf4; /* green-50 */
+                color: #16a34a; /* green-600 */
+            }
+            25%, 75% { 
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #dcfce7; /* green-100 */
+            }
+        }
+        
+        @keyframes heroShimmer {
+            0%, 100% { opacity: 0.8; transform: translateX(0) scale(1); }
+            50% { opacity: 1; transform: translateX(10px) scale(1.02); }
+        }
+        
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: floatIcon 15s linear infinite;
+        }
+        
+        @keyframes floatIcon {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .product-card:hover::before {
+            left: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        .price-glow {
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            animation: priceGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes priceGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(34, 197, 94, 0.8); }
+        }
+        
+
+        
+        .magic-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) scale(0); 
+                opacity: 0;
+            }
+            10% { 
+                opacity: 1; 
+                transform: translateY(90vh) translateX(10px) scale(1);
+            }
+            90% { 
+                opacity: 1; 
+                transform: translateY(10vh) translateX(-10px) scale(1);
+            }
+            100% { 
+                transform: translateY(0) translateX(0) scale(0); 
+                opacity: 0;
+            }
+        }
+        
+        .success-celebration {
+            animation: celebrate 0.6s ease-out;
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); background-color: #22c55e; }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .popup-message {
+                width: 280px;
+            }
+            .whatsapp-popup {
+                left: 20px;
+                bottom: 160px;
+            }
+            .message-popup {
+                right: 20px;
+                bottom: 160px;
+            }
+            .notification {
+                right: 10px;
+                left: 10px;
+                transform: translateY(-100px);
+            }
+            .notification.show {
+                transform: translateY(0);
+            }
+            .floating-icon {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Utility Header -->
+    <div class="bg-green-600 text-white py-2">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm">
+            <div class="flex items-center space-x-4 mb-2 md:mb-0">
+                <span><i class="fas fa-phone mr-1"></i><a href="tel:08012345678" class="hover:underline">08012345678</a></span>
+                <span><i class="fas fa-envelope mr-1"></i>info@healthhub.ng</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span>Free delivery on orders above ₦15,000</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="bg-white border-b py-3">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center space-x-4">
+                <div class="flex-1 flex">
+                    <select id="categorySelect" class="bg-gray-100 border border-r-0 px-3 py-2 rounded-l-lg focus:outline-none">
+                        <option value="">All Categories</option>
+                        <option value="pain-relief">Pain Relief</option>
+                        <option value="vitamins">Vitamins & Supplements</option>
+                        <option value="skincare">Skincare</option>
+                        <option value="baby-care">Baby Care</option>
+                        <option value="personal-care">Personal Care</option>
+                        <option value="first-aid">First Aid</option>
+                    </select>
+                    <input type="text" id="searchInput" placeholder="Search for medicines, health products..." class="flex-1 border px-4 py-2 focus:outline-none">
+                    <button onclick="performSearch()" class="bg-green-600 text-white px-6 py-2 rounded-r-lg hover:bg-green-700 transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="animated-header shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <a href="#" onclick="showSection('home')" class="text-2xl font-bold header-logo cursor-pointer">
+                        <i class="fas fa-plus-circle mr-2"></i>HealthHub
+                    </a>
+                    <nav class="hidden md:flex space-x-6">
+                        <a href="#" onclick="showSection('home')" class="header-text hover:text-green-600 transition-colors">Home</a>
+                        <div class="relative group">
+                            <a href="#" onclick="showSection('products')" class="header-text hover:text-green-600 transition-colors flex items-center">
+                                Products <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </a>
+                            <div class="dropdown-menu absolute top-full left-0 shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                <a href="#" onclick="filterProducts('pain-relief')" class="dropdown-item block px-4 py-2 hover:bg-green-50 hover:text-green-600">Pain Relief</a>
+                                <a href="#" onclick="filterProducts('vitamins')" class="dropdown-item block px-4 py-2 hover:bg-green-50 hover:text-green-600">Vitamins & Supplements</a>
+                                <a href="#" onclick="filterProducts('skincare')" class="dropdown-item block px-4 py-2 hover:bg-green-50 hover:text-green-600">Skincare</a>
+                                <a href="#" onclick="filterProducts('baby-care')" class="dropdown-item block px-4 py-2 hover:bg-green-50 hover:text-green-600">Baby Care</a>
+                                <a href="#" onclick="filterProducts('personal-care')" class="dropdown-item block px-4 py-2 hover:bg-green-50 hover:text-green-600">Personal Care</a>
+                                <a href="#" onclick="filterProducts('first-aid')" class="dropdown-item block px-4 py-2 hover:bg-green-50 hover:text-green-600">First Aid</a>
+                            </div>
+                        </div>
+                        <a href="#" onclick="showSection('about')" class="header-text hover:text-green-600 transition-colors">About Us</a>
+                        <a href="#" onclick="showSection('contact')" class="header-text hover:text-green-600 transition-colors">Contact Us</a>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showSection('cart')" class="relative header-cart hover:text-green-600 transition-colors">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button class="md:hidden header-mobile-btn" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden mt-4 hidden">
+                <nav class="flex flex-col space-y-2">
+                    <a href="#" onclick="showSection('home')" class="header-text hover:text-green-600 py-2">Home</a>
+                    <a href="#" onclick="showSection('products')" class="header-text hover:text-green-600 py-2">Products</a>
+                    <a href="#" onclick="showSection('about')" class="header-text hover:text-green-600 py-2">About Us</a>
+                    <a href="#" onclick="showSection('contact')" class="header-text hover:text-green-600 py-2">Contact Us</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <!-- Home Section -->
+        <section id="homeSection" class="section-content">
+            <!-- Hero Section -->
+            <div class="hero-gradient text-white py-16 relative">
+                <div class="magic-particles">
+                    <div class="particle" style="left: 5%; animation-delay: 0s;"></div>
+                    <div class="particle" style="left: 15%; animation-delay: 1s;"></div>
+                    <div class="particle" style="left: 25%; animation-delay: 2s;"></div>
+                    <div class="particle" style="left: 35%; animation-delay: 3s;"></div>
+                    <div class="particle" style="left: 45%; animation-delay: 4s;"></div>
+                    <div class="particle" style="left: 55%; animation-delay: 5s;"></div>
+                    <div class="particle" style="left: 65%; animation-delay: 6s;"></div>
+                    <div class="particle" style="left: 75%; animation-delay: 7s;"></div>
+                    <div class="particle" style="left: 85%; animation-delay: 0.5s;"></div>
+                    <div class="particle" style="left: 95%; animation-delay: 1.5s;"></div>
+                </div>
+                <div class="floating-icons">
+                    <div class="floating-icon" style="left: 10%; animation-delay: 0s;">💊</div>
+                    <div class="floating-icon" style="left: 20%; animation-delay: 2s;">🏥</div>
+                    <div class="floating-icon" style="left: 30%; animation-delay: 4s;">💉</div>
+                    <div class="floating-icon" style="left: 40%; animation-delay: 6s;">🩺</div>
+                    <div class="floating-icon" style="left: 50%; animation-delay: 8s;">💊</div>
+                    <div class="floating-icon" style="left: 60%; animation-delay: 10s;">🏥</div>
+                    <div class="floating-icon" style="left: 70%; animation-delay: 12s;">💉</div>
+                    <div class="floating-icon" style="left: 80%; animation-delay: 14s;">🩺</div>
+                </div>
+                <div class="container mx-auto px-4 text-center relative z-10">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4 bounce-in">Your Health, Our Priority</h1>
+                    <p class="text-xl mb-8 slide-up" style="animation-delay: 0.3s;">Quality medicines and healthcare products delivered to your doorstep</p>
+                    <button onclick="showSection('products')" class="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl glow slide-up relative overflow-hidden group" style="animation-delay: 0.6s;">
+                        <span class="relative z-10 flex items-center justify-center">
+                            <i class="fas fa-shopping-bag mr-2"></i>
+                            Shop Now
+                        </span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-green-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Featured Products -->
+            <div class="container mx-auto px-4 py-16">
+                <h2 class="text-3xl font-bold text-center mb-12 slide-up">
+                    <i class="fas fa-star text-yellow-500 mr-2"></i>Featured Products
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="featuredProducts">
+                    <!-- Featured products will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="productsSection" class="section-content hidden">
+            <div class="container mx-auto px-4 py-8">
+                <h1 class="text-3xl font-bold mb-8">Our Products</h1>
+                <div class="flex flex-wrap gap-4 mb-8">
+                    <button onclick="filterProducts('')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">All</button>
+                    <button onclick="filterProducts('pain-relief')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">Pain Relief</button>
+                    <button onclick="filterProducts('vitamins')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">Vitamins</button>
+                    <button onclick="filterProducts('skincare')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">Skincare</button>
+                    <button onclick="filterProducts('baby-care')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">Baby Care</button>
+                    <button onclick="filterProducts('personal-care')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">Personal Care</button>
+                    <button onclick="filterProducts('first-aid')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">First Aid</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="productsGrid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="aboutSection" class="section-content hidden">
+            <div class="container mx-auto px-4 py-8">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-4xl font-bold text-center mb-8">About HealthHub</h1>
+                    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                        <h2 class="text-2xl font-bold mb-4 text-green-600">Our Mission</h2>
+                        <p class="text-gray-700 mb-6">At HealthHub, we are committed to providing accessible, affordable, and quality healthcare products to everyone. Our mission is to bridge the gap between patients and quality medicines by offering a convenient online platform where you can find all your healthcare needs.</p>
+                        
+                        <h2 class="text-2xl font-bold mb-4 text-green-600">Why Choose Us?</h2>
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                                <div>
+                                    <h3 class="font-semibold mb-2">Quality Assured</h3>
+                                    <p class="text-gray-600">All our products are sourced from licensed manufacturers and distributors.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-shipping-fast text-green-600 mt-1"></i>
+                                <div>
+                                    <h3 class="font-semibold mb-2">Fast Delivery</h3>
+                                    <p class="text-gray-600">Quick and reliable delivery to your doorstep across Nigeria.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-user-md text-green-600 mt-1"></i>
+                                <div>
+                                    <h3 class="font-semibold mb-2">Expert Support</h3>
+                                    <p class="text-gray-600">Our qualified pharmacists are available to answer your questions.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-shield-alt text-green-600 mt-1"></i>
+                                <div>
+                                    <h3 class="font-semibold mb-2">Secure Shopping</h3>
+                                    <p class="text-gray-600">Your privacy and security are our top priorities.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="text-2xl font-bold mb-4 text-green-600">Our Story</h2>
+                        <p class="text-gray-700 mb-4">Founded in 2020, HealthHub started with a simple vision: to make quality healthcare products accessible to everyone in Nigeria. We recognized the challenges people face in accessing genuine medicines and decided to create a platform that brings the pharmacy to your fingertips.</p>
+                        <p class="text-gray-700">Today, we serve thousands of customers across Nigeria, providing them with genuine medicines, health supplements, and personal care products. Our team of qualified pharmacists and healthcare professionals work tirelessly to ensure that every product meets the highest quality standards.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contactSection" class="section-content hidden">
+            <div class="container mx-auto px-4 py-8">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-4xl font-bold text-center mb-8">Contact Us</h1>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h2 class="text-2xl font-bold mb-6 text-green-600">Get in Touch</h2>
+                            <form id="contactForm" onsubmit="submitContactForm(event)">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 font-semibold mb-2">Name *</label>
+                                    <input type="text" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 font-semibold mb-2">Email *</label>
+                                    <input type="email" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 font-semibold mb-2">Phone *</label>
+                                    <input type="tel" required maxlength="11" pattern="[0-9]{11}" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 font-semibold mb-2">Subject *</label>
+                                    <input type="text" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                </div>
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 font-semibold mb-2">Message *</label>
+                                    <textarea required rows="4" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h2 class="text-2xl font-bold mb-6 text-green-600">Contact Information</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-map-marker-alt text-green-600"></i>
+                                    <div>
+                                        <h3 class="font-semibold">Address</h3>
+                                        <p class="text-gray-600">123 Health Street, Victoria Island, Lagos, Nigeria</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-phone text-green-600"></i>
+                                    <div>
+                                        <h3 class="font-semibold">Phone</h3>
+                                        <p class="text-gray-600"><a href="tel:08012345678" class="hover:text-green-600">08012345678</a></p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-envelope text-green-600"></i>
+                                    <div>
+                                        <h3 class="font-semibold">Email</h3>
+                                        <p class="text-gray-600">info@healthhub.ng</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-clock text-green-600"></i>
+                                    <div>
+                                        <h3 class="font-semibold">Business Hours</h3>
+                                        <p class="text-gray-600">Mon - Fri: 8:00 AM - 8:00 PM<br>Sat - Sun: 9:00 AM - 6:00 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cart Section -->
+        <section id="cartSection" class="section-content hidden">
+            <div class="container mx-auto px-4 py-8">
+                <h1 class="text-3xl font-bold mb-8">Shopping Cart</h1>
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div id="cartItems" class="divide-y">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                    <div class="p-6 bg-gray-50">
+                        <div class="flex justify-between items-center text-xl font-bold mb-4">
+                            <span>Total: </span>
+                            <span id="cartTotal">₦0</span>
+                        </div>
+                        <button onclick="proceedToCheckout()" id="checkoutBtn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400" disabled>
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Checkout Section -->
+        <section id="checkoutSection" class="section-content hidden">
+            <div class="container mx-auto px-4 py-8">
+                <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+                <form id="checkoutForm" onsubmit="submitOrder(event)">
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <!-- Payment Method -->
+                            <div class="bg-white rounded-lg shadow-lg p-6">
+                                <h2 class="text-xl font-bold mb-4">Payment Method</h2>
+                                <div class="space-y-3">
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="paymentMethod" value="bank" class="text-green-600" checked>
+                                        <span>Bank Transfer</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="paymentMethod" value="delivery" class="text-green-600">
+                                        <span>Pay on Delivery</span>
+                                    </label>
+                                </div>
+                                <div id="bankDetails" class="mt-4 p-4 bg-gray-50 rounded-lg">
+                                    <h3 class="font-semibold mb-2">Bank Details</h3>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span>Bank Name:</span>
+                                            <span class="font-semibold">First Bank Nigeria</span>
+                                            <button type="button" onclick="copyToClipboard('First Bank Nigeria')" class="text-green-600 hover:text-green-700">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Account Number:</span>
+                                            <span class="font-semibold">1234567890</span>
+                                            <button type="button" onclick="copyToClipboard('1234567890')" class="text-green-600 hover:text-green-700">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Account Name:</span>
+                                            <span class="font-semibold">MediCare Plus Ltd</span>
+                                            <button type="button" onclick="copyToClipboard('MediCare Plus Ltd')" class="text-green-600 hover:text-green-700">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <label class="block text-gray-700 font-semibold mb-2">Upload Payment Receipt *</label>
+                                        <input type="file" id="paymentReceipt" accept="image/*,.pdf" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                        <p class="text-xs text-gray-500 mt-1">Maximum file size: 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Delivery Information -->
+                            <div class="bg-white rounded-lg shadow-lg p-6">
+                                <h2 class="text-xl font-bold mb-4">Delivery Information</h2>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-gray-700 font-semibold mb-2">First Name *</label>
+                                        <input type="text" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 font-semibold mb-2">Last Name *</label>
+                                        <input type="text" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 font-semibold mb-2">Phone Number *</label>
+                                        <input type="tel" required maxlength="11" pattern="[0-9]{11}" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 font-semibold mb-2">Email *</label>
+                                        <input type="email" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-gray-700 font-semibold mb-2">Address *</label>
+                                        <textarea required rows="3" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 font-semibold mb-2">State *</label>
+                                        <select id="stateSelect" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600" onchange="updateCities(); updateDeliveryFee()">
+                                            <option value="">Select State</option>
+                                            <option value="Lagos">Lagos</option>
+                                            <option value="Abuja">Abuja</option>
+                                            <option value="Kano">Kano</option>
+                                            <option value="Rivers">Rivers</option>
+                                            <option value="Oyo">Oyo</option>
+                                            <option value="Kaduna">Kaduna</option>
+                                            <option value="Ogun">Ogun</option>
+                                            <option value="Imo">Imo</option>
+                                            <option value="Plateau">Plateau</option>
+                                            <option value="Akwa Ibom">Akwa Ibom</option>
+                                            <option value="Abia">Abia</option>
+                                            <option value="Adamawa">Adamawa</option>
+                                            <option value="Anambra">Anambra</option>
+                                            <option value="Bauchi">Bauchi</option>
+                                            <option value="Bayelsa">Bayelsa</option>
+                                            <option value="Benue">Benue</option>
+                                            <option value="Borno">Borno</option>
+                                            <option value="Cross River">Cross River</option>
+                                            <option value="Delta">Delta</option>
+                                            <option value="Ebonyi">Ebonyi</option>
+                                            <option value="Edo">Edo</option>
+                                            <option value="Ekiti">Ekiti</option>
+                                            <option value="Enugu">Enugu</option>
+                                            <option value="Gombe">Gombe</option>
+                                            <option value="Jigawa">Jigawa</option>
+                                            <option value="Kebbi">Kebbi</option>
+                                            <option value="Kogi">Kogi</option>
+                                            <option value="Kwara">Kwara</option>
+                                            <option value="Nasarawa">Nasarawa</option>
+                                            <option value="Niger">Niger</option>
+                                            <option value="Ondo">Ondo</option>
+                                            <option value="Osun">Osun</option>
+                                            <option value="Sokoto">Sokoto</option>
+                                            <option value="Taraba">Taraba</option>
+                                            <option value="Yobe">Yobe</option>
+                                            <option value="Zamfara">Zamfara</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 font-semibold mb-2">City *</label>
+                                        <select id="citySelect" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-green-600" onchange="updateDeliveryFee()">
+                                            <option value="">Select City</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                                        <span class="mb-1 sm:mb-0">Delivery Fee:</span>
+                                        <span id="deliveryFee" class="font-semibold">₦0</span>
+                                    </div>
+                                    <p class="text-xs sm:text-sm text-gray-600 mt-2">Free delivery on orders above ₦15,000</p>
+                                </div>
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="bg-white rounded-lg shadow-lg p-6">
+                                <label class="flex items-start space-x-3">
+                                    <input type="checkbox" required class="mt-1">
+                                    <span class="text-sm text-gray-700">I agree to the <a href="#" onclick="showTerms()" class="text-green-600 hover:underline">Terms and Conditions</a> and <a href="#" onclick="showPrivacy()" class="text-green-600 hover:underline">Privacy Policy</a></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="bg-white rounded-lg shadow-lg p-6 h-fit">
+                            <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+                            <div id="checkoutItems" class="space-y-3 mb-4">
+                                <!-- Checkout items will be loaded here -->
+                            </div>
+                            <div class="border-t pt-4 space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Subtotal:</span>
+                                    <span id="checkoutSubtotal">₦0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Delivery:</span>
+                                    <span id="checkoutDelivery">₦0</span>
+                                </div>
+                                <div class="flex justify-between font-bold text-lg border-t pt-2">
+                                    <span>Total:</span>
+                                    <span id="checkoutTotal">₦0</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors mt-4">
+                                Submit Order
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="slide-up">
+                    <div class="flex items-center mb-4">
+                        <div class="text-2xl mr-2">🏥</div>
+                        <h3 class="text-xl font-bold">HealthHub</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">Your trusted online pharmacy for quality medicines and healthcare products.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white hover:scale-110 transition-all duration-300 bg-blue-600 p-2 rounded-full"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white hover:scale-110 transition-all duration-300 bg-pink-600 p-2 rounded-full"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white hover:scale-110 transition-all duration-300 bg-blue-400 p-2 rounded-full"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="slide-up" style="animation-delay: 0.1s;">
+                    <h4 class="font-semibold mb-4 flex items-center">
+                        <i class="fas fa-link mr-2 text-green-400"></i>Quick Links
+                    </h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" onclick="showSection('home')" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center"><i class="fas fa-home mr-2 text-xs"></i>Home</a></li>
+                        <li><a href="#" onclick="showSection('products')" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center"><i class="fas fa-pills mr-2 text-xs"></i>Products</a></li>
+                        <li><a href="#" onclick="showSection('about')" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center"><i class="fas fa-info-circle mr-2 text-xs"></i>About Us</a></li>
+                        <li><a href="#" onclick="showSection('contact')" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center"><i class="fas fa-envelope mr-2 text-xs"></i>Contact</a></li>
+                    </ul>
+                </div>
+                <div class="slide-up" style="animation-delay: 0.2s;">
+                    <h4 class="font-semibold mb-4 flex items-center">
+                        <i class="fas fa-tags mr-2 text-green-400"></i>Categories
+                    </h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" onclick="filterProducts('pain-relief')" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center"><i class="fas fa-tablets mr-2 text-xs"></i>Pain Relief</a></li>
+                        <li><a href="#" onclick="filterProducts('vitamins')" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center"><i class="fas fa-capsules mr-2 text-xs"></i>Vitamins</a></li>
+                        <li><a href="#" onclick="filterProducts('skincare')" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center"><i class="fas fa-spa mr-2 text-xs"></i>Skincare</a></li>
+                        <li><a href="#" onclick="filterProducts('baby-care')" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center"><i class="fas fa-baby mr-2 text-xs"></i>Baby Care</a></li>
+                    </ul>
+                </div>
+                <div class="slide-up" style="animation-delay: 0.3s;">
+                    <h4 class="font-semibold mb-4 flex items-center">
+                        <i class="fas fa-address-book mr-2 text-green-400"></i>Contact Info
+                    </h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-center hover:text-white transition-colors">
+                            <div class="bg-green-600 p-2 rounded-full mr-3">
+                                <i class="fas fa-phone text-xs"></i>
+                            </div>
+                            <a href="tel:08012345678" class="hover:underline">08012345678</a>
+                        </li>
+                        <li class="flex items-center hover:text-white transition-colors">
+                            <div class="bg-green-600 p-2 rounded-full mr-3">
+                                <i class="fas fa-envelope text-xs"></i>
+                            </div>
+                            <span>info@healthhub.ng</span>
+                        </li>
+                        <li class="flex items-center hover:text-white transition-colors">
+                            <div class="bg-green-600 p-2 rounded-full mr-3">
+                                <i class="fas fa-map-marker-alt text-xs"></i>
+                            </div>
+                            <span>Lagos, Nigeria</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2025 HealthHub. All rights reserved.</p>
+                <div class="mt-2 space-x-4">
+                    <a href="#" onclick="showPrivacy()" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" onclick="showTerms()" class="hover:text-white">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- Sticky Icons -->
+    <div class="sticky-icon whatsapp-icon">
+        <button onclick="toggleWhatsAppPopup()" class="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 hover:scale-110 float relative glow">
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <div class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                💬
+            </div>
+        </button>
+    </div>
+
+    <div class="sticky-icon message-icon">
+        <button onclick="toggleMessagePopup()" class="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300 hover:scale-110 float relative" style="animation-delay: 0.5s;">
+            <i class="fas fa-comment text-2xl"></i>
+            <div class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                ✉️
+            </div>
+        </button>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div class="fixed right-4 bottom-4 z-50">
+        <button onclick="scrollToTop()" id="backToTop" class="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-all duration-300 hover:scale-110 opacity-0 invisible glow">
+            <i class="fas fa-arrow-up text-xl"></i>
+        </button>
+    </div>
+
+    <!-- WhatsApp Popup -->
+    <div id="whatsappPopup" class="popup-message whatsapp-popup">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-green-600">WhatsApp Support</h3>
+            <button onclick="toggleWhatsAppPopup()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-3">Welcome! How can we help you today?</p>
+        <a href="https://wa.me/2348012345678" target="_blank" class="block w-full bg-green-500 text-white text-center py-2 rounded-lg hover:bg-green-600 transition-colors">
+            Start Chat
+        </a>
+    </div>
+
+    <!-- Message Popup -->
+    <div id="messagePopup" class="popup-message message-popup">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-blue-600">Leave a Message</h3>
+            <button onclick="toggleMessagePopup()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-3">We are here to assist you!</p>
+        <form id="quickMessageForm" onsubmit="submitQuickMessage(event)">
+            <input type="text" placeholder="Your Name *" required class="w-full border rounded px-3 py-2 mb-2 text-sm focus:outline-none focus:border-blue-600">
+            <input type="email" placeholder="Your Email *" required class="w-full border rounded px-3 py-2 mb-2 text-sm focus:outline-none focus:border-blue-600">
+            <textarea placeholder="Your Message *" required rows="3" class="w-full border rounded px-3 py-2 mb-3 text-sm focus:outline-none focus:border-blue-600"></textarea>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors">
+                Send Message
+            </button>
+        </form>
+    </div>
+
+    <!-- Modals -->
+    <div id="orderSummaryModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-md w-full max-h-96 overflow-y-auto">
+            <div class="p-6">
+                <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+                <div id="finalOrderSummary"></div>
+                <div class="flex space-x-4 mt-6">
+                    <button onclick="closeOrderSummary()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400 transition-colors">
+                        Cancel
+                    </button>
+                    <button onclick="confirmOrder()" class="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">
+                        Confirm Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div id="termsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div class="p-4 sm:p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg sm:text-xl font-bold">Terms and Conditions</h2>
+                    <button onclick="closeTermsModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="text-sm sm:text-base text-gray-700 space-y-4">
+                    <div>
+                        <h3 class="font-semibold mb-2">1. Product Availability</h3>
+                        <p>All orders are subject to product availability. We reserve the right to cancel orders if products become unavailable.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">2. Delivery Terms</h3>
+                        <p>Delivery times may vary based on location and product availability. We aim to deliver within the specified timeframe but cannot guarantee exact delivery times.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">3. Payment</h3>
+                        <p>Payment must be completed before delivery for bank transfer orders. Pay on delivery is available for selected locations.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">4. Returns and Refunds</h3>
+                        <p>Returns are accepted within 7 days of delivery for unopened products. Prescription medicines cannot be returned once delivered.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">5. Prescription Medicines</h3>
+                        <p>Prescription medicines require a valid prescription from a licensed healthcare provider.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">6. Pricing</h3>
+                        <p>All prices are subject to change without notice. The price at the time of order confirmation will be honored.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">7. Service Limitations</h3>
+                        <p>We reserve the right to refuse service or cancel orders at our discretion.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center p-4" onclick="closeImageModal()">
+        <div class="relative max-w-4xl max-h-full">
+            <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg">
+            <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75 transition-all">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div class="p-4 sm:p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg sm:text-xl font-bold">Privacy Policy</h2>
+                    <button onclick="closePrivacyModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="text-sm sm:text-base text-gray-700 space-y-4">
+                    <div>
+                        <h3 class="font-semibold mb-2">1. Information Collection</h3>
+                        <p>We collect personal information necessary for order processing, including name, address, phone number, and email address.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">2. Data Security</h3>
+                        <p>Your personal information is kept confidential and secure. We use industry-standard security measures to protect your data.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">3. Data Sharing</h3>
+                        <p>We do not share your personal data with third parties except as necessary for order fulfillment and delivery.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">4. Cookies</h3>
+                        <p>We use cookies to improve user experience and website functionality. You can disable cookies in your browser settings.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">5. Data Rights</h3>
+                        <p>You have the right to request access to, correction of, or deletion of your personal data. Contact us for any data-related requests.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">6. Compliance</h3>
+                        <p>We comply with applicable data protection regulations and privacy laws.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">7. Contact</h3>
+                        <p>For any privacy concerns or questions, please contact us at info@healthhub.ng or call 08012345678.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample products data with local image paths
+        const products = [
+            {
+                id: 1,
+                name: "Paracetamol 500mg",
+                category: "pain-relief",
+                price: 1500,
+                image: "./images/paracetamol.jpg", // Local path to image
+                alt: "Paracetamol 500mg tablets for pain relief and fever reduction",
+                description: "Effective pain relief and fever reducer"
+            },
+            {
+                id: 2,
+                name: "Vitamin C 1000mg",
+                category: "vitamins",
+                price: 3500,
+                image: "./images/vitamin-c.jpg",
+                alt: "Vitamin C 1000mg tablets for immune system support",
+                description: "Boost your immune system"
+            },
+            {
+                id: 3,
+                name: "Face Moisturizer",
+                category: "skincare",
+                price: 4500,
+                image: "./images/face-moisturizer.jpg",
+                alt: "Hydrating face moisturizer cream for all skin types",
+                description: "Hydrating face cream for all skin types"
+            },
+            {
+                id: 4,
+                name: "Baby Lotion",
+                category: "baby-care",
+                price: 2800,
+                image: "./images/baby-lotion.jpg",
+                alt: "Gentle baby lotion for sensitive skin moisturizing",
+                description: "Gentle moisturizing lotion for babies"
+            },
+            {
+                id: 5,
+                name: "Antiseptic Solution",
+                category: "first-aid",
+                price: 1200,
+                image: "./images/antiseptic.jpg",
+                alt: "Antiseptic solution for wound cleaning and disinfection",
+                description: "Wound cleaning and disinfection"
+            },
+            {
+                id: 6,
+                name: "Multivitamin Tablets",
+                category: "vitamins",
+                price: 5500,
+                image: "./images/multivitamin.jpg",
+                alt: "Complete multivitamin tablets for daily health supplement",
+                description: "Complete daily vitamin supplement"
+            },
+            {
+                id: 7,
+                name: "Ibuprofen 400mg",
+                category: "pain-relief",
+                price: 2200,
+                image: "./images/ibuprofen.jpg",
+                alt: "Ibuprofen 400mg tablets for anti-inflammatory pain relief",
+                description: "Anti-inflammatory pain reliever"
+            },
+            {
+                id: 8,
+                name: "Sunscreen SPF 50",
+                category: "skincare",
+                price: 6800,
+                image: "./images/sunscreen.jpg",
+                alt: "SPF 50 sunscreen lotion for broad spectrum UV protection",
+                description: "Broad spectrum UV protection"
+            },
+            {
+                id: 9,
+                name: "Baby Shampoo",
+                category: "baby-care",
+                price: 3200,
+                image: "./images/baby-shampoo.jpg",
+                alt: "Tear-free gentle baby shampoo for delicate hair",
+                description: "Tear-free gentle baby shampoo"
+            },
+            {
+                id: 10,
+                name: "Hand Sanitizer",
+                category: "personal-care",
+                price: 800,
+                image: "./images/hand-sanitizer.jpg",
+                alt: "70% alcohol hand sanitizer for effective germ protection",
+                description: "70% alcohol hand sanitizer"
+            },
+            {
+                id: 11,
+                name: "Bandages Pack",
+                category: "first-aid",
+                price: 1800,
+                image: "./images/bandages.jpg",
+                alt: "Assorted adhesive bandages pack for wound care",
+                description: "Assorted adhesive bandages"
+            },
+            {
+                id: 12,
+                name: "Omega-3 Capsules",
+                category: "vitamins",
+                price: 7200,
+                image: "./images/omega-3.jpg",
+                alt: "Omega-3 fish oil capsules for heart and brain health",
+                description: "Heart and brain health supplement"
+            }
+        ];
+
+        let cart = [];
+        let currentSection = 'home';
+
+        // Cities data for each state
+        const citiesData = {
+            'Lagos': ['Ikeja', 'Victoria Island', 'Lekki', 'Surulere', 'Yaba', 'Ikoyi', 'Ajah', 'Alaba', 'Apapa', 'Badagry', 'Epe', 'Ikorodu', 'Mushin', 'Oshodi'],
+            'Abuja': ['Garki', 'Wuse', 'Maitama', 'Asokoro', 'Gwarinpa', 'Kubwa', 'Nyanya', 'Karu', 'Lugbe', 'Jabi'],
+            'Kano': ['Kano Municipal', 'Fagge', 'Dala', 'Gwale', 'Tarauni', 'Nassarawa', 'Ungogo', 'Kumbotso'],
+            'Rivers': ['Port Harcourt', 'Obio-Akpor', 'Okrika', 'Eleme', 'Tai', 'Gokana', 'Khana', 'Degema'],
+            'Oyo': ['Ibadan North', 'Ibadan South-West', 'Ibadan North-East', 'Ibadan North-West', 'Ibadan South-East', 'Egbeda', 'Akinyele', 'Lagelu'],
+            'Kaduna': ['Kaduna North', 'Kaduna South', 'Chikun', 'Igabi', 'Ikara', 'Jaba', 'Jema\'a', 'Kachia'],
+            'Ogun': ['Abeokuta North', 'Abeokuta South', 'Ado-Odo/Ota', 'Ewekoro', 'Ifo', 'Ijebu East', 'Ijebu North', 'Ijebu Ode'],
+            'Imo': ['Owerri Municipal', 'Owerri North', 'Owerri West', 'Aboh Mbaise', 'Ahiazu Mbaise', 'Ehime Mbano', 'Ezinihitte', 'Ideato North'],
+            'Plateau': ['Jos North', 'Jos South', 'Jos East', 'Bassa', 'Bokkos', 'Barkin Ladi', 'Riyom', 'Mangu'],
+            'Akwa Ibom': ['Uyo', 'Ikot Ekpene', 'Eket', 'Oron', 'Abak', 'Ikot Abasi', 'Eastern Obolo', 'Essien Udim'],
+            'Abia': ['Aba North', 'Aba South', 'Arochukwu', 'Bende', 'Ikwuano', 'Isiala Ngwa North', 'Isiala Ngwa South', 'Isuikwuato'],
+            'Adamawa': ['Yola North', 'Yola South', 'Fufure', 'Ganye', 'Gayuk', 'Gombi', 'Grie', 'Hong'],
+            'Anambra': ['Awka North', 'Awka South', 'Anambra East', 'Anambra West', 'Anaocha', 'Ayamelum', 'Dunukofia', 'Ekwusigo'],
+            'Bauchi': ['Bauchi', 'Tafawa Balewa', 'Dass', 'Toro', 'Bogoro', 'Ningi', 'Warji', 'Ganjuwa'],
+            'Bayelsa': ['Yenagoa', 'Kolokuma/Opokuma', 'Ogbia', 'Sagbama', 'Brass', 'Ekeremor', 'Nembe', 'Southern Ijaw'],
+            'Benue': ['Makurdi', 'Gboko', 'Katsina-Ala', 'Konshisha', 'Kwande', 'Logo', 'Obi', 'Ogbadibo'],
+            'Borno': ['Maiduguri', 'Jere', 'Konduga', 'Bama', 'Gwoza', 'Kukawa', 'Monguno', 'Ngala'],
+            'Cross River': ['Calabar Municipal', 'Calabar South', 'Akpabuyo', 'Bakassi', 'Bekwarra', 'Biase', 'Boki', 'Etung'],
+            'Delta': ['Warri North', 'Warri South', 'Warri South West', 'Uvwie', 'Okpe', 'Sapele', 'Udu', 'Ughelli North'],
+            'Ebonyi': ['Abakaliki', 'Afikpo North', 'Afikpo South', 'Ebonyi', 'Ezza North', 'Ezza South', 'Ikwo', 'Ishielu'],
+            'Edo': ['Benin City', 'Egor', 'Ikpoba Okha', 'Oredo', 'Akoko-Edo', 'Esan Central', 'Esan North-East', 'Esan South-East'],
+            'Ekiti': ['Ado Ekiti', 'Ikere', 'Oye', 'Aiyekire', 'Efon', 'Ekiti East', 'Ekiti South-West', 'Ekiti West'],
+            'Enugu': ['Enugu East', 'Enugu North', 'Enugu South', 'Aninri', 'Awgu', 'Ezeagu', 'Igbo Etiti', 'Igbo Eze North'],
+            'Gombe': ['Gombe', 'Akko', 'Balanga', 'Billiri', 'Dukku', 'Funakaye', 'Kaltungo', 'Kwami'],
+            'Jigawa': ['Dutse', 'Hadejia', 'Kazaure', 'Gumel', 'Ringim', 'Birnin Kudu', 'Garki', 'Gwaram'],
+            'Kebbi': ['Birnin Kebbi', 'Aleiro', 'Arewa Dandi', 'Argungu', 'Augie', 'Bagudo', 'Bunza', 'Dandi'],
+            'Kogi': ['Lokoja', 'Ajaokuta', 'Ankpa', 'Bassa', 'Dekina', 'Ibaji', 'Idah', 'Igalamela Odolu'],
+            'Kwara': ['Ilorin East', 'Ilorin South', 'Ilorin West', 'Asa', 'Baruten', 'Edu', 'Ekiti', 'Ifelodun'],
+            'Nasarawa': ['Lafia', 'Keffi', 'Akwanga', 'Awe', 'Doma', 'Karu', 'Keana', 'Kokona'],
+            'Niger': ['Minna', 'Bida', 'Kontagora', 'Agaie', 'Agwara', 'Bida', 'Borgu', 'Bosso'],
+            'Ondo': ['Akure North', 'Akure South', 'Akoko North-East', 'Akoko North-West', 'Akoko South-West', 'Akoko South-East', 'Ese Odo', 'Idanre'],
+            'Osun': ['Osogbo', 'Olorunda', 'Orolu', 'Oriade', 'Obokun', 'Odo Otin', 'Ife Central', 'Ife East'],
+            'Sokoto': ['Sokoto North', 'Sokoto South', 'Binji', 'Bodinga', 'Dange Shuni', 'Gada', 'Goronyo', 'Gudu'],
+            'Taraba': ['Jalingo', 'Wukari', 'Ardo Kola', 'Bali', 'Donga', 'Gashaka', 'Gassol', 'Ibi'],
+            'Yobe': ['Damaturu', 'Potiskum', 'Bade', 'Bursari', 'Fika', 'Fune', 'Geidam', 'Gujba'],
+            'Zamfara': ['Gusau', 'Tsafe', 'Anka', 'Bakura', 'Birnin Magaji/Kiyaw', 'Bukkuyum', 'Bungudu', 'Chafe']
+        };
+
+        // Initialize the page with premium loading
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add page load animation
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(20px)';
+            document.body.style.transition = 'all 0.8s ease-out';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+                document.body.style.transform = 'translateY(0)';
+                
+                // Stagger load animations
+                setTimeout(() => loadFeaturedProducts(), 200);
+                setTimeout(() => loadProducts(), 400);
+                setTimeout(() => updateCartDisplay(), 600);
+                
+                // Add entrance animations to elements
+                const elements = document.querySelectorAll('.slide-up');
+                elements.forEach((el, index) => {
+                    setTimeout(() => {
+                        el.style.animationPlayState = 'running';
+                    }, index * 100);
+                });
+            }, 100);
+        });
+
+        // Section management
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+            
+            // Show selected section
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            currentSection = section;
+
+            // Update URL without page reload
+            window.history.pushState({section: section}, '', '#' + section);
+
+            // Close mobile menu if open
+            document.getElementById('mobileMenu').classList.add('hidden');
+
+            // Special handling for products section
+            if (section === 'products') {
+                loadProducts();
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Load featured products
+        function loadFeaturedProducts() {
+            const container = document.getElementById('featuredProducts');
+            const featured = products.slice(0, 4);
+            
+            container.innerHTML = featured.map((product, index) => `
+                <div class="product-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 slide-up" style="animation-delay: ${index * 0.1}s;">
+                    <div class="featured-badge">⭐ Featured</div>
+                    <div class="p-6 text-center">
+                        <div class="mb-4 flex justify-center">
+                            <img src="${product.image}" alt="${product.alt}" class="w-24 h-24 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal('${product.image}', '${product.alt}')" onerror="this.src=''; this.alt='Image not available'; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="text-6xl hidden">📦</div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4">${product.description}</p>
+                        <div class="text-2xl font-bold text-green-600 mb-4 price-glow">₦${product.price.toLocaleString()}</div>
+                        <div class="flex items-center justify-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(4.9)</span>
+                        </div>
+                        <button onclick="addToCart(${product.id}, this)" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-all duration-200 hover:shadow-lg active:scale-95 hover:scale-105 relative overflow-hidden group">
+                            <span class="relative z-10 flex items-center justify-center">
+                                <i class="fas fa-cart-plus mr-2 group-hover:animate-bounce"></i>Add to Cart
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-green-500 to-green-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load products
+        function loadProducts(filter = '') {
+            const container = document.getElementById('productsGrid');
+            const filteredProducts = filter ? products.filter(p => p.category === filter) : products;
+            
+            container.innerHTML = filteredProducts.map(product => `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="p-6 text-center">
+                        <div class="mb-4 flex justify-center">
+                            <img src="${product.image}" alt="${product.alt}" class="w-24 h-24 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal('${product.image}', '${product.alt}')" onerror="this.src=''; this.alt='Image not available'; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="text-6xl hidden">📦</div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4">${product.description}</p>
+                        <div class="text-2xl font-bold text-green-600 mb-4">₦${product.price.toLocaleString()}</div>
+                        <button onclick="addToCart(${product.id}, this)" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-all duration-200 hover:shadow-lg active:scale-95">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter products
+        function filterProducts(category) {
+            showSection('products');
+            loadProducts(category);
+            
+            // Update filter buttons
+            document.querySelectorAll('#productsSection button').forEach(btn => {
+                btn.classList.remove('bg-green-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            if (category === '') {
+                document.querySelector('#productsSection button').classList.remove('bg-gray-200', 'text-gray-700');
+                document.querySelector('#productsSection button').classList.add('bg-green-600', 'text-white');
+            }
+        }
+
+        // Search functionality
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categorySelect').value;
+            
+            let filteredProducts = products;
+            
+            if (category) {
+                filteredProducts = filteredProducts.filter(p => p.category === category);
+            }
+            
+            if (searchTerm) {
+                filteredProducts = filteredProducts.filter(p => 
+                    p.name.toLowerCase().includes(searchTerm) || 
+                    p.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            showSection('products');
+            const container = document.getElementById('productsGrid');
+            container.innerHTML = filteredProducts.map(product => `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="p-6 text-center">
+                        <div class="mb-4 flex justify-center">
+                            <img src="${product.image}" alt="${product.alt}" class="w-24 h-24 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal('${product.image}', '${product.alt}')" onerror="this.src=''; this.alt='Image not available'; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="text-6xl hidden">📦</div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4">${product.description}</p>
+                        <div class="text-2xl font-bold text-green-600 mb-4">₦${product.price.toLocaleString()}</div>
+                        <button onclick="addToCart(${product.id}, this)" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-all duration-200 hover:shadow-lg active:scale-95">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <div class="mr-3 text-lg">
+                        ${type === 'success' ? '✅' : '⚠️'}
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold">${type === 'success' ? 'Success!' : 'Notice'}</div>
+                        <div class="text-sm opacity-90">${message}</div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-3 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Add entrance animation
+            notification.style.transform = 'translateX(400px) scale(0.8)';
+            notification.style.opacity = '0';
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0) scale(1)';
+                notification.style.opacity = '1';
+                notification.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+            }, 50);
+            
+            // Auto-hide notification
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px) scale(0.8)';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        container.removeChild(notification);
+                    }
+                }, 400);
+            }, 4000);
+        }
+
+        // Show message on button
+        function showButtonMessage(button, message, type = 'success') {
+            const originalText = button.innerHTML;
+            const originalClasses = button.className;
+            
+            // Update button appearance
+            if (type === 'success') {
+                button.className = button.className.replace('bg-green-600', 'bg-green-500').replace('bg-blue-500', 'bg-green-500');
+                button.innerHTML = `<i class="fas fa-check mr-2"></i>${message}`;
+            } else {
+                button.className = button.className.replace('bg-green-600', 'bg-red-500').replace('bg-blue-500', 'bg-red-500');
+                button.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i>${message}`;
+            }
+            
+            button.disabled = true;
+            
+            // Reset after delay
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.className = originalClasses;
+                button.disabled = false;
+            }, 3000);
+        }
+
+        // Cart functionality
+        function addToCart(productId, buttonElement) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            // Get the button that was clicked
+            const button = buttonElement || event.target;
+            const originalText = button.innerHTML;
+            const originalClasses = button.className;
+            
+            // Show loading state
+            button.innerHTML = '<div class="loading-spinner"></div>Adding...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                    // Show success message on button
+                    button.className = button.className.replace('bg-green-600', 'bg-green-500');
+                    button.innerHTML = '<i class="fas fa-check mr-2"></i>Quantity Updated!';
+                } else {
+                    cart.push({...product, quantity: 1});
+                    // Show success message on button
+                    button.className = button.className.replace('bg-green-600', 'bg-green-500');
+                    button.innerHTML = '<i class="fas fa-check mr-2"></i>Added to Cart!';
+                }
+                
+                updateCartDisplay();
+                
+                // Add pulse effect to cart icon
+                const cartIcon = document.querySelector('.fa-shopping-cart').parentElement;
+                cartIcon.classList.add('pulse-success');
+                setTimeout(() => cartIcon.classList.remove('pulse-success'), 600);
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.className = originalClasses;
+                    button.disabled = false;
+                }, 3000);
+            }, 800);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartDisplay();
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartDisplay();
+                }
+            }
+        }
+
+        function updateCartDisplay() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            cartCount.textContent = totalItems;
+            cartTotal.textContent = '₦' + totalPrice.toLocaleString();
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="p-8 text-center text-gray-500">Your cart is empty</div>';
+                checkoutBtn.disabled = true;
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="flex items-center justify-between p-4">
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal('${item.image}', '${item.name}')" onerror="this.src=''; this.alt='Image not available'; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div class="text-3xl hidden">📦</div>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">${item.name}</h3>
+                                <p class="text-gray-600">₦${item.price.toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 text-gray-700 w-8 h-8 rounded-full hover:bg-gray-300">-</button>
+                            <span class="font-semibold">${item.quantity}</span>
+                            <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 text-gray-700 w-8 h-8 rounded-full hover:bg-gray-300">+</button>
+                            <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 ml-4">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                checkoutBtn.disabled = false;
+            }
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) return;
+            
+            showSection('checkout');
+            updateCheckoutSummary();
+            
+            // Handle payment method change
+            document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const bankDetails = document.getElementById('bankDetails');
+                    const paymentReceipt = document.getElementById('paymentReceipt');
+                    
+                    if (this.value === 'bank') {
+                        bankDetails.style.display = 'block';
+                        paymentReceipt.required = true;
+                    } else {
+                        bankDetails.style.display = 'none';
+                        paymentReceipt.required = false;
+                    }
+                });
+            });
+        }
+
+        function updateCheckoutSummary() {
+            const checkoutItems = document.getElementById('checkoutItems');
+            const checkoutSubtotal = document.getElementById('checkoutSubtotal');
+            const checkoutDelivery = document.getElementById('checkoutDelivery');
+            const checkoutTotal = document.getElementById('checkoutTotal');
+            
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = calculateDeliveryFee(subtotal);
+            const total = subtotal + deliveryFee;
+            
+            checkoutItems.innerHTML = cart.map(item => `
+                <div class="flex justify-between text-sm">
+                    <span>${item.name} x ${item.quantity}</span>
+                    <span>₦${(item.price * item.quantity).toLocaleString()}</span>
+                </div>
+            `).join('');
+            
+            checkoutSubtotal.textContent = '₦' + subtotal.toLocaleString();
+            checkoutDelivery.textContent = '₦' + deliveryFee.toLocaleString();
+            checkoutTotal.textContent = '₦' + total.toLocaleString();
+        }
+
+        function updateCities() {
+            const stateSelect = document.getElementById('stateSelect');
+            const citySelect = document.getElementById('citySelect');
+            const selectedState = stateSelect.value;
+            
+            // Clear existing cities
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            
+            if (selectedState && citiesData[selectedState]) {
+                citiesData[selectedState].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+                citySelect.disabled = false;
+            } else {
+                citySelect.disabled = true;
+            }
+        }
+
+        function updateDeliveryFee() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = calculateDeliveryFee(subtotal);
+            
+            document.getElementById('deliveryFee').textContent = '₦' + deliveryFee.toLocaleString();
+            updateCheckoutSummary();
+        }
+
+        function calculateDeliveryFee(subtotal) {
+            if (subtotal >= 15000) return 0; // Free delivery
+            
+            const state = document.getElementById('stateSelect').value;
+            if (state === 'Lagos') {
+                return 6000; // Minimum delivery fee for Lagos
+            } else if (state && state !== '') {
+                return 5000; // Constant fee for other states
+            }
+            return 0;
+        }
+
+        function submitOrder(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<div class="loading-spinner"></div>Processing...';
+            submitBtn.disabled = true;
+            
+            // Validate file size if bank transfer is selected
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            if (paymentMethod === 'bank') {
+                const fileInput = document.getElementById('paymentReceipt');
+                if (fileInput.files[0] && fileInput.files[0].size > 5 * 1024 * 1024) {
+                    showNotification('File size must be less than 5MB', 'error');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    return;
+                }
+            }
+            
+            // Simulate processing time
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                showOrderSummary();
+            }, 1500);
+        }
+
+        function showOrderSummary() {
+            const modal = document.getElementById('orderSummaryModal');
+            const summaryContent = document.getElementById('finalOrderSummary');
+            
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = calculateDeliveryFee(subtotal);
+            const total = subtotal + deliveryFee;
+            
+            summaryContent.innerHTML = `
+                <div class="space-y-3">
+                    <h3 class="font-semibold">Items:</h3>
+                    ${cart.map(item => `
+                        <div class="flex justify-between text-sm">
+                            <span>${item.name} x ${item.quantity}</span>
+                            <span>₦${(item.price * item.quantity).toLocaleString()}</span>
+                        </div>
+                    `).join('')}
+                    <div class="border-t pt-3 space-y-2">
+                        <div class="flex justify-between">
+                            <span>Subtotal:</span>
+                            <span>₦${subtotal.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Delivery:</span>
+                            <span>₦${deliveryFee.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-lg border-t pt-2">
+                            <span>Total:</span>
+                            <span>₦${total.toLocaleString()}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeOrderSummary() {
+            document.getElementById('orderSummaryModal').classList.add('hidden');
+        }
+
+        function confirmOrder() {
+            const confirmBtn = document.querySelector('#orderSummaryModal button:last-child');
+            const originalText = confirmBtn.innerHTML;
+            
+            // Show loading state
+            confirmBtn.innerHTML = '<div class="loading-spinner"></div>Submitting...';
+            confirmBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Show order confirmed state
+                confirmBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Order Confirmed, We\'ll Contact You Shortly';
+                confirmBtn.classList.add('success-celebration');
+                confirmBtn.className = confirmBtn.className.replace('bg-green-600', 'bg-green-500');
+                
+                setTimeout(() => {
+                    // Clear cart
+                    cart = [];
+                    updateCartDisplay();
+                    
+                    // Close modal
+                    closeOrderSummary();
+                    
+                    // Add celebration effect to the page
+                    document.body.classList.add('success-celebration');
+                    setTimeout(() => document.body.classList.remove('success-celebration'), 600);
+                    
+                    // Redirect to home with fade effect
+                    setTimeout(() => {
+                        showSection('home');
+                        document.getElementById('homeSection').classList.add('fade-in');
+                    }, 500);
+                    
+                    // Reset button
+                    confirmBtn.innerHTML = originalText;
+                    confirmBtn.disabled = false;
+                    confirmBtn.classList.remove('success-celebration');
+                    confirmBtn.className = confirmBtn.className.replace('bg-green-500', 'bg-green-600');
+                }, 3000);
+            }, 2000);
+        }
+        
+
+        
+
+
+        // Sticky icons functionality
+        function toggleWhatsAppPopup() {
+            const popup = document.getElementById('whatsappPopup');
+            popup.classList.toggle('show');
+            
+            // Close message popup if open
+            document.getElementById('messagePopup').classList.remove('show');
+        }
+
+        function toggleMessagePopup() {
+            const popup = document.getElementById('messagePopup');
+            popup.classList.toggle('show');
+            
+            // Close WhatsApp popup if open
+            document.getElementById('whatsappPopup').classList.remove('show');
+        }
+
+        // Contact form submission
+        function submitContactForm(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<div class="loading-spinner"></div>Sending...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                showButtonMessage(submitBtn, 'Message Sent Successfully!');
+                event.target.reset();
+            }, 1500);
+        }
+
+        function submitQuickMessage(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<div class="loading-spinner"></div>Sending...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                showButtonMessage(submitBtn, 'Message Sent!');
+                event.target.reset();
+                setTimeout(() => {
+                    toggleMessagePopup();
+                }, 2000);
+            }, 1200);
+        }
+
+        // Utility functions
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard: ' + text);
+            });
+        }
+
+        function showTerms() {
+            document.getElementById('termsModal').classList.remove('hidden');
+        }
+
+        function closeTermsModal() {
+            document.getElementById('termsModal').classList.add('hidden');
+        }
+
+        function showPrivacy() {
+            document.getElementById('privacyModal').classList.remove('hidden');
+        }
+
+        function closePrivacyModal() {
+            document.getElementById('privacyModal').classList.add('hidden');
+        }
+
+        // Close popups when clicking outside
+        document.addEventListener('click', function(event) {
+            const whatsappPopup = document.getElementById('whatsappPopup');
+            const messagePopup = document.getElementById('messagePopup');
+            const whatsappIcon = document.querySelector('.whatsapp-icon');
+            const messageIcon = document.querySelector('.message-icon');
+            
+            if (!whatsappIcon.contains(event.target) && !whatsappPopup.contains(event.target)) {
+                whatsappPopup.classList.remove('show');
+            }
+            
+            if (!messageIcon.contains(event.target) && !messagePopup.contains(event.target)) {
+                messagePopup.classList.remove('show');
+            }
+        });
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.section) {
+                showSection(event.state.section);
+            }
+        });
+
+        // Phone number validation
+        document.addEventListener('input', function(event) {
+            if (event.target.type === 'tel') {
+                event.target.value = event.target.value.replace(/\D/g, '').slice(0, 11);
+            }
+        });
+
+        // Back to top functionality
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show/hide back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        // Smooth scroll to top when changing sections
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+            
+            // Show selected section
+            const targetSection = document.getElementById(section + 'Section');
+            targetSection.classList.remove('hidden');
+            targetSection.classList.add('fade-in');
+            
+            // Remove fade-in class after animation
+            setTimeout(() => targetSection.classList.remove('fade-in'), 500);
+            
+            currentSection = section;
+
+            // Smooth scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Update URL without page reload
+            window.history.pushState({section: section}, '', '#' + section);
+
+            // Close mobile menu if open
+            document.getElementById('mobileMenu').classList.add('hidden');
+
+            // Special handling for products section
+            if (section === 'products') {
+                loadProducts();
+            }
+        }
+
+        // Image modal functions
+        function openImageModal(imageSrc, imageAlt) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageSrc;
+            modalImage.alt = imageAlt;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Enhanced copy to clipboard with better feedback
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification(`📋 Copied: ${text}`);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`📋 Copied: ${text}`);
+            });
+        }
+
+        // Add loading state to search
+        function performSearch() {
+            const searchBtn = document.querySelector('button[onclick="performSearch()"]');
+            const originalHTML = searchBtn.innerHTML;
+            
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            searchBtn.disabled = true;
+            
+            setTimeout(() => {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const category = document.getElementById('categorySelect').value;
+                
+                let filteredProducts = products;
+                
+                if (category) {
+                    filteredProducts = filteredProducts.filter(p => p.category === category);
+                }
+                
+                if (searchTerm) {
+                    filteredProducts = filteredProducts.filter(p => 
+                        p.name.toLowerCase().includes(searchTerm) || 
+                        p.description.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                showSection('products');
+                const container = document.getElementById('productsGrid');
+                
+                if (filteredProducts.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <div class="text-6xl mb-4">🔍</div>
+                            <h3 class="text-xl font-semibold mb-2">No products found</h3>
+                            <p class="text-gray-600">Try adjusting your search terms or browse our categories.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = filteredProducts.map(product => `
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow fade-in">
+                            <div class="p-6 text-center">
+                                <div class="mb-4 flex justify-center">
+                                    <img src="${product.image}" alt="${product.alt}" class="w-24 h-24 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal('${product.image}', '${product.alt}')" onerror="this.src=''; this.alt='Image not available'; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    <div class="text-6xl hidden">📦</div>
+                                </div>
+                                <h3 class="font-bold text-lg mb-2">${product.name}</h3>
+                                <p class="text-gray-600 text-sm mb-4">${product.description}</p>
+                                <div class="text-2xl font-bold text-green-600 mb-4">₦${product.price.toLocaleString()}</div>
+                                <button onclick="addToCart(${product.id}, this)" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-all duration-200 hover:shadow-lg active:scale-95">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                searchBtn.innerHTML = originalHTML;
+                searchBtn.disabled = false;
+            }, 800);
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97877353a682414c',t:'MTc1Njc1Nzg0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
